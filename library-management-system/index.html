@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A beginner-friendly library management system built with HTML, CSS, JavaScript and LocalStorage.">
+  <title>Libra — Library Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="brand-mark large">L</div>
+      <p class="eyebrow">LIBRARY MANAGEMENT SYSTEM</p>
+      <h1>Welcome to Libra</h1>
+      <p class="muted">Sign in to manage your library in one simple place.</p>
+      <form id="login-form">
+        <label>Email address<input id="login-email" type="email" placeholder="admin@library.com" required></label>
+        <label>Password<input id="login-password" type="password" placeholder="Enter any password" required></label>
+        <label>Sign in as
+          <select id="login-role"><option value="admin">Administrator / Librarian</option><option value="student">Student</option></select>
+        </label>
+        <button class="btn btn-primary full" type="submit">Sign in <span>→</span></button>
+      </form>
+      <div class="demo-accounts">
+        <strong>Demo accounts</strong>
+        <div><span>Admin</span><button type="button" class="text-button" data-demo="admin">Use admin account</button></div>
+        <div><span>Student</span><button type="button" class="text-button" data-demo="student">Use student account</button></div>
+        <small>Demo only: any password is accepted. LocalStorage login is not secure authentication.</small>
+      </div>
+    </div>
+    <div class="login-decoration"><div class="decor-circle"></div><div class="decor-copy"><span>READ. LEARN. GROW.</span><h2>Every great idea<br>starts with a book.</h2><p>Organize your collection, support your readers, and keep your library moving.</p></div></div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><div class="brand-mark">L</div><div><strong>libra</strong><small>LIBRARY SPACE</small></div></div>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="side-nav" id="main-nav">
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon">▦</span> Dashboard</button>
+        <button class="nav-item" data-page="books"><span class="nav-icon">▤</span> Books</button>
+        <button class="nav-item" data-page="students"><span class="nav-icon">♙</span> Students</button>
+        <button class="nav-item" data-page="categories"><span class="nav-icon">▧</span> Categories</button>
+        <div class="side-label nav-section-label">CIRCULATION</div>
+        <button class="nav-item" data-page="borrowings"><span class="nav-icon">↗</span> Borrowing</button>
+        <button class="nav-item" data-page="returns"><span class="nav-icon">↙</span> Returns</button>
+        <div class="side-label nav-section-label">INSIGHTS</div>
+        <button class="nav-item" data-page="reports"><span class="nav-icon">▥</span> Reports</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="help-card"><div class="help-icon">✦</div><strong>Need a hand?</strong><p>Keep your library organized with Libra.</p><span>Made for learning</span></div><div class="sidebar-user"><div class="avatar" id="side-avatar">AD</div><div class="user-copy"><strong id="side-name">Administrator</strong><small id="side-role">Librarian</small></div><button id="logout-btn" class="icon-button" title="Sign out">↪</button></div></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button id="mobile-menu" class="icon-button mobile-menu" aria-label="Open menu">☰</button>
+        <div class="breadcrumb"><span>Library</span><b>/</b><strong id="page-breadcrumb">Dashboard</strong></div>
+        <div class="top-actions"><div class="today-label" id="today-label"></div><div class="top-avatar" id="top-avatar">AD</div></div>
+      </header>
+      <div class="page-wrap">
+        <section class="page active" id="page-dashboard">
+          <div class="page-heading"><div><p class="eyebrow">OVERVIEW</p><h1>Good day, <span id="welcome-name">there</span> <span class="wave">✦</span></h1><p class="muted">Here’s what’s happening in your library today.</p></div><button class="btn btn-primary admin-only" data-open="book">＋ Add a book</button></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span>Total books</span><span class="stat-icon blue">▤</span></div><strong id="stat-books">0</strong><small><span class="positive">●</span> In your collection</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Registered students</span><span class="stat-icon purple">♙</span></div><strong id="stat-students">0</strong><small>Active library members</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Available copies</span><span class="stat-icon green">✓</span></div><strong id="stat-available">0</strong><small>Ready to be borrowed</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Currently borrowed</span><span class="stat-icon orange">↗</span></div><strong id="stat-borrowed">0</strong><small id="stat-overdue-label">0 overdue</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <section class="panel chart-panel"><div class="panel-heading"><div><h2>Borrowing activity</h2><p class="muted">Overview of current circulation</p></div><span class="soft-pill">All time</span></div><div class="chart-area"><div class="chart-y"><span>12</span><span>9</span><span>6</span><span>3</span><span>0</span></div><div class="chart-bars" id="activity-chart"><div class="chart-empty">Borrow books to see activity here.</div></div></div><div class="chart-legend"><span><i class="legend-dot"></i> Borrowed books</span><span><i class="legend-dot pale"></i> Returned books</span></div></section>
+            <section class="panel"><div class="panel-heading"><div><h2>Book availability</h2><p class="muted">Your collection at a glance</p></div></div><div class="donut-wrap"><div class="donut" id="availability-donut"><div><strong id="donut-percent">0%</strong><small>Available</small></div></div></div><div class="availability-legend"><div><span><i class="legend-dot"></i> Available</span><strong id="legend-available">0</strong></div><div><span><i class="legend-dot orange-dot"></i> Borrowed</span><strong id="legend-borrowed">0</strong></div></div></section>
+          </div>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Recent borrowing activity</h2><p class="muted">The latest transactions in your library</p></div><button class="text-button" data-goto="borrowings">View all →</button></div><div class="table-scroll"><table><thead><tr><th>STUDENT</th><th>BOOK</th><th>DATE BORROWED</th><th>DUE DATE</th><th>STATUS</th></tr></thead><tbody id="recent-transactions"></tbody></table></div></section>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Recently added books</h2><p class="muted">Fresh additions to the shelves</p></div><button class="text-button" data-goto="books">Browse books →</button></div><div id="recent-books" class="recent-books"></div></section>
+        </section>
+
+        <section class="page" id="page-books">
+          <div class="page-heading"><div><p class="eyebrow">COLLECTION</p><h1>Books</h1><p class="muted">Manage and explore your library collection.</p></div><button class="btn btn-primary admin-only" data-open="book">＋ Add a book</button></div>
+          <div class="toolbar"><div class="search-box">⌕ <input id="book-search" placeholder="Search title, author, ISBN..."></div><select id="book-filter"><option value="all">All availability</option><option value="available">Available</option><option value="unavailable">Unavailable</option></select></div>
+          <section class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>BOOK</th><th>ISBN</th><th>CATEGORY</th><th>AUTHOR</th><th>QUANTITY</th><th>AVAILABLE</th><th class="admin-only">ACTIONS</th></tr></thead><tbody id="books-table"></tbody></table></div></section>
+        </section>
+
+        <section class="page" id="page-students">
+          <div class="page-heading"><div><p class="eyebrow">MEMBERS</p><h1>Students</h1><p class="muted">Keep student information up to date.</p></div><button class="btn btn-primary admin-only" data-open="student">＋ Add student</button></div>
+          <div class="toolbar"><div class="search-box">⌕ <input id="student-search" placeholder="Search name, student ID, email..."></div></div>
+          <section class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>STUDENT</th><th>STUDENT ID</th><th>DEPARTMENT</th><th>EMAIL</th><th>PHONE</th><th>BOOKS BORROWED</th><th class="admin-only">ACTIONS</th></tr></thead><tbody id="students-table"></tbody></table></div></section>
+        </section>
+
+        <section class="page" id="page-categories">
+          <div class="page-heading"><div><p class="eyebrow">ORGANIZATION</p><h1>Categories</h1><p class="muted">Organize books into easy-to-find collections.</p></div><button class="btn btn-primary admin-only" data-open="category">＋ Add category</button></div>
+          <section class="category-grid" id="category-grid"></section>
+        </section>
+
+        <section class="page" id="page-borrowings">
+          <div class="page-heading"><div><p class="eyebrow">CIRCULATION</p><h1>Borrowing</h1><p class="muted">Track books checked out by students.</p></div><button class="btn btn-primary admin-only" data-open="borrow">＋ New borrowing</button></div>
+          <div class="toolbar"><div class="search-box">⌕ <input id="borrowing-search" placeholder="Search student or book..."></div><select id="borrowing-filter"><option value="all">All records</option><option value="active">Borrowed</option><option value="overdue">Overdue</option><option value="returned">Returned</option></select></div>
+          <section class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>TRANSACTION</th><th>STUDENT</th><th>BOOK</th><th>BORROWED</th><th>DUE DATE</th><th>STATUS</th><th class="admin-only">ACTION</th></tr></thead><tbody id="borrowings-table"></tbody></table></div></section>
+        </section>
+
+        <section class="page" id="page-returns">
+          <div class="page-heading"><div><p class="eyebrow">CIRCULATION</p><h1>Returns</h1><p class="muted">Review returned books and outstanding loans.</p></div></div>
+          <div class="toolbar"><div class="search-box">⌕ <input id="return-search" placeholder="Search student or book..."></div></div>
+          <section class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>TRANSACTION</th><th>STUDENT</th><th>BOOK</th><th>DUE DATE</th><th>RETURN DATE</th><th>OVERDUE DAYS</th><th>STATUS</th><th class="admin-only">ACTION</th></tr></thead><tbody id="returns-table"></tbody></table></div></section>
+        </section>
+
+        <section class="page" id="page-reports">
+          <div class="page-heading"><div><p class="eyebrow">INSIGHTS</p><h1>Reports</h1><p class="muted">A simple summary of your library performance.</p></div><button class="btn btn-outline" id="print-report">⎙ Print report</button></div>
+          <div class="stats-grid report-stats"><article class="stat-card"><span>Total book copies</span><strong id="report-copies">0</strong></article><article class="stat-card"><span>Borrowing records</span><strong id="report-loans">0</strong></article><article class="stat-card"><span>Returned records</span><strong id="report-returns">0</strong></article><article class="stat-card"><span>Overdue now</span><strong id="report-overdue">0</strong></article></div>
+          <div class="dashboard-grid"><section class="panel"><div class="panel-heading"><div><h2>Most borrowed books</h2><p class="muted">Ranked by borrowing count</p></div></div><div id="popular-books" class="rank-list"></div></section><section class="panel"><div class="panel-heading"><div><h2>Active readers</h2><p class="muted">Students with the most loans</p></div></div><div id="active-students" class="rank-list"></div></section></div>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Borrowing history</h2><p class="muted">All transactions</p></div></div><div class="table-scroll"><table><thead><tr><th>TRANSACTION</th><th>STUDENT</th><th>BOOK</th><th>BORROWED</th><th>RETURNED</th><th>STATUS</th></tr></thead><tbody id="report-history"></tbody></table></div></section>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modal-backdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-heading"><div><p class="eyebrow">LIBRARY DETAILS</p><h2 id="modal-title">Add item</h2></div><button class="icon-button" id="modal-close" aria-label="Close">×</button></div>
+      <form id="modal-form"><div id="modal-fields" class="form-grid"></div><div class="modal-actions"><button type="button" class="btn btn-outline" id="modal-cancel">Cancel</button><button type="submit" class="btn btn-primary" id="modal-submit">Save changes</button></div></form>
+    </div>
+  </div>
+  <div class="confirm-backdrop hidden" id="confirm-backdrop"><div class="confirm-card"><div class="confirm-symbol">?</div><h3>Are you sure?</h3><p id="confirm-message">Please confirm this action.</p><div class="modal-actions"><button class="btn btn-outline" id="confirm-cancel">Cancel</button><button class="btn btn-danger" id="confirm-yes">Confirm</button></div></div></div>
+  <script src="js/storage.js"></script><script src="js/app.js"></script>
+</body>
+</html>
